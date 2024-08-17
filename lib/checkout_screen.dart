@@ -142,7 +142,7 @@ class _CheckoutScreenState extends State<CheckoutScreen> {
                   },
                 ),
                 IconButton(
-                  icon: Icon(Icons.add),
+                  icon: const Icon(Icons.add),
                   onPressed: () {
                     int currentQuantity =
                         int.tryParse(_quantityController.text) ?? 0;
@@ -201,7 +201,7 @@ class _CheckoutScreenState extends State<CheckoutScreen> {
                   borderRadius: BorderRadius.circular(10.0),
                 ),
                 contentPadding:
-                    EdgeInsets.symmetric(horizontal: 12.0, vertical: 8.0),
+                    const EdgeInsets.symmetric(horizontal: 12.0, vertical: 8.0),
               ),
               dropdownColor: Colors.white,
               borderRadius: BorderRadius.circular(10.0),
@@ -215,12 +215,12 @@ class _CheckoutScreenState extends State<CheckoutScreen> {
                   value: value,
                   child: Text(
                     value,
-                    style: TextStyle(fontSize: 16.0, color: Colors.black),
+                    style: const TextStyle(fontSize: 16.0, color: Colors.black),
                   ),
                 );
               }).toList(),
-              style: TextStyle(fontSize: 16.0, color: Colors.black),
-              icon: Icon(Icons.arrow_drop_down, color: Colors.black),
+              style: const TextStyle(fontSize: 16.0, color: Colors.black),
+              icon: const Icon(Icons.arrow_drop_down, color: Colors.black),
               isExpanded: true,
             ),
             Row(
@@ -233,25 +233,25 @@ class _CheckoutScreenState extends State<CheckoutScreen> {
                     });
                   },
                 ),
-                Text('Trừ trực tiếp'),
+                const Text('Trừ trực tiếp'),
               ],
             ),
             ElevatedButton(
               onPressed: _calculateDiscount,
-              child: Text('Tính tiền'),
+              child: const Text('Tính tiền'),
             ),
             ElevatedButton(
               onPressed: _generateRandomValues,
-              child: Text('Generate Random Values'),
+              child: const Text('Generate Random Values'),
             ),
             SizedBox(height: 20),
             ElevatedButton(
               onPressed: _showPurchaseHistory,
-              child: Text('Xem lịch sử mua'),
+              child: const Text('Xem lịch sử mua'),
             ),
             Text(
               'Số tiền sau khi tính toán: \$${_calculatedPrice.toStringAsFixed(2)}',
-              style: TextStyle(fontSize: 16, fontWeight: FontWeight.bold),
+              style: const TextStyle(fontSize: 16, fontWeight: FontWeight.bold),
             ),
           ],
         ),
@@ -267,7 +267,28 @@ class _CheckoutScreenState extends State<CheckoutScreen> {
       _showErrorDialog('Vui lòng nhập giá tiền và chiết khấu hợp lệ.');
       return;
     }
-
+    if (discountPercentage > 100) {
+      _showErrorDialog('Chiết khấu không thể lớn hơn 100%.');
+      return;
+    }
+    if (_quantityController.text.isEmpty) {
+      _showErrorDialog('Vui lòng nhập số lượng.');
+      return;
+    } else if (int.tryParse(_quantityController.text) == 0) {
+      _showErrorDialog('Số lượng phải lớn hơn 0.');
+      return;
+    } else if (int.tryParse(_quantityController.text) == null) {
+      _showErrorDialog('Số lượng phải là số.');
+      return;
+    }
+    if (_productNameController.text.isEmpty) {
+      _showErrorDialog('Vui lòng nhập tên sản phẩm.');
+      return;
+    }
+    if (_phoneController.text.isEmpty) {
+      _showErrorDialog('Vui lòng nhập số điện thoại.');
+      return;
+    }
     double discountedPrice;
     if (_isDiscountAppliedDirectly) {
       discountedPrice = price * (1 - discountPercentage / 100);
