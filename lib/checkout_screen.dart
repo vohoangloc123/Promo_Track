@@ -1,8 +1,7 @@
-import 'dart:math';
-
 import 'package:flutter/material.dart';
 import 'package:promo_track/utils/random_utils.dart';
 import 'package:shared_preferences/shared_preferences.dart';
+import 'package:intl/intl.dart';
 
 class CheckoutScreen extends StatefulWidget {
   @override
@@ -15,6 +14,7 @@ class _CheckoutScreenState extends State<CheckoutScreen> {
   final _discountController = TextEditingController();
   final _productNameController = TextEditingController();
   final _quantityController = TextEditingController();
+  final _dateTimeController = TextEditingController();
   bool _isDiscountAppliedDirectly = true;
   String _selectedPaymentMethod = 'Cash';
   double _calculatedPrice = 0; // Biến lưu trữ số tiền đã tính toán
@@ -52,6 +52,15 @@ class _CheckoutScreenState extends State<CheckoutScreen> {
     });
   }
 
+  void _setCurrentDateTime() {
+    // Get current date and time
+    DateTime now = DateTime.now();
+    String formattedDateTime = DateFormat('yyyy-MM-dd HH:mm:ss').format(now);
+
+    // Set the formatted date and time to the controller
+    _dateTimeController.text = formattedDateTime;
+  }
+
   void _saveHistory() async {
     final prefs = await SharedPreferences.getInstance();
 
@@ -60,11 +69,12 @@ class _CheckoutScreenState extends State<CheckoutScreen> {
 
     // Tăng giá trị ID cho lần mua tiếp theo
     currentId++;
-
+    DateTime now = DateTime.now();
+    String formattedDateTime = DateFormat('yyyy-MM-dd HH:mm').format(now);
     // Lưu thông tin lịch sử
     List<String> history = prefs.getStringList('purchase_history') ?? [];
     String historyEntry =
-        'ID: $currentId, Product name: ${_productNameController.text}, Quantity: ${_quantityController.text}, Price: ${_priceController.text}, Discount: ${_discountController.text}, Applied Directly: ${_isDiscountAppliedDirectly},  Payment Method: $_selectedPaymentMethod';
+        'ID: $currentId, DateTime: $formattedDateTime, Product name: ${_productNameController.text}, Quantity: ${_quantityController.text}, Price: ${_priceController.text}, Discount: ${_discountController.text}, Applied Directly: ${_isDiscountAppliedDirectly},  Payment Method: $_selectedPaymentMethod';
     history.add(historyEntry);
     await prefs.setStringList('purchase_history', history);
 
@@ -90,6 +100,7 @@ class _CheckoutScreenState extends State<CheckoutScreen> {
         padding: const EdgeInsets.all(16.0),
         child: Column(
           children: <Widget>[
+            const SizedBox(height: 10),
             TextField(
               controller: _productNameController,
               decoration: InputDecoration(
