@@ -1,5 +1,5 @@
 import 'package:flutter/material.dart';
-import 'package:promo_track/purchase_history_screen.dart';
+import 'package:promo_track/widgets/payment_list.dart';
 import 'checkout_screen.dart';
 
 class HomeScreen extends StatefulWidget {
@@ -8,7 +8,6 @@ class HomeScreen extends StatefulWidget {
 }
 
 class _HomeScreenState extends State<HomeScreen> {
-
   @override
   void initState() {
     super.initState();
@@ -23,7 +22,7 @@ class _HomeScreenState extends State<HomeScreen> {
           mainAxisAlignment: MainAxisAlignment.center,
           children: [
             ElevatedButton(
-              onPressed: (){
+              onPressed: () {
                 Navigator.push(
                   context,
                   MaterialPageRoute(builder: (context) => CheckoutScreen()),
@@ -32,10 +31,11 @@ class _HomeScreenState extends State<HomeScreen> {
               child: const Text('Add Order'),
             ),
             ElevatedButton(
-              onPressed: (){
+              onPressed: () {
                 Navigator.push(
                   context,
-                  MaterialPageRoute(builder: (context) => PurchaseHistoryScreen()), // Chuyển đến màn hình lịch sử mua
+                  MaterialPageRoute(
+                      builder: (context) => const PaymentHistoryList()),
                 );
               },
               child: const Text('View Purchase History'),
