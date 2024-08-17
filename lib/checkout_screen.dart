@@ -13,7 +13,10 @@ class _CheckoutScreenState extends State<CheckoutScreen> {
   final _phoneController = TextEditingController();
   final _priceController = TextEditingController();
   final _discountController = TextEditingController();
+  final _productNameController = TextEditingController();
+  final _quantityController = TextEditingController();
   bool _isDiscountAppliedDirectly = true;
+  String _selectedPaymentMethod = 'Cash';
   double _calculatedPrice = 0; // Biến lưu trữ số tiền đã tính toán
   void _showPurchaseHistory() async {
     final prefs = await SharedPreferences.getInstance();
@@ -52,15 +55,24 @@ class _CheckoutScreenState extends State<CheckoutScreen> {
   void _saveHistory() async {
     final prefs = await SharedPreferences.getInstance();
 
+    // Lấy ID hiện tại từ SharedPreferences
+    int currentId = prefs.getInt('purchase_id') ?? 0;
+
+    // Tăng giá trị ID cho lần mua tiếp theo
+    currentId++;
+
     // Lưu thông tin lịch sử
     List<String> history = prefs.getStringList('purchase_history') ?? [];
     String historyEntry =
-        'Price: ${_priceController.text}, Discount: ${_discountController.text}, Applied Directly: ${_isDiscountAppliedDirectly}';
+        'ID: $currentId, Product name: ${_productNameController.text}, Quantity: ${_quantityController.text}, Price: ${_priceController.text}, Discount: ${_discountController.text}, Applied Directly: ${_isDiscountAppliedDirectly},  Payment Method: $_selectedPaymentMethod';
     history.add(historyEntry);
     await prefs.setStringList('purchase_history', history);
 
+    // Lưu ID hiện tại để sử dụng cho lần tiếp theo
+    await prefs.setInt('purchase_id', currentId);
+
     // Hiển thị thông báo Snackbar
-    print("Saved History: $historyEntry'");
+    print("Saved History: $historyEntry");
 
     // Lưu thông tin chiết khấu
     await prefs.setString('last_discount', _discountController.text);
@@ -72,32 +84,133 @@ class _CheckoutScreenState extends State<CheckoutScreen> {
   Widget build(BuildContext context) {
     return Scaffold(
       appBar: AppBar(
-        title: Text('Checkout Screen'),
+        title: const Text('Checkout Screen'),
       ),
       body: Padding(
         padding: const EdgeInsets.all(16.0),
         child: Column(
           children: <Widget>[
             TextField(
-              controller: _phoneController,
+              controller: _productNameController,
               decoration: InputDecoration(
-                border: OutlineInputBorder(),
-                hintText: 'Nhập số điện thoại khách hàng',
+                labelText: 'Product Name',
+                border: OutlineInputBorder(
+                  borderRadius: BorderRadius.circular(10.0),
+                ),
+                contentPadding:
+                    const EdgeInsets.symmetric(horizontal: 12.0, vertical: 8.0),
               ),
             ),
+            const SizedBox(height: 10),
+            Row(
+              children: [
+                Expanded(
+                  child: TextField(
+                    controller: _quantityController,
+                    decoration: InputDecoration(
+                      labelText: 'Quantity',
+                      border: OutlineInputBorder(
+                        borderRadius: BorderRadius.circular(10.0),
+                      ),
+                      contentPadding: const EdgeInsets.symmetric(
+                          horizontal: 12.0, vertical: 8.0),
+                    ),
+                    keyboardType: TextInputType.number,
+                    textAlign: TextAlign.left,
+                  ),
+                ),
+                IconButton(
+                  icon: const Icon(Icons.remove),
+                  onPressed: () {
+                    int currentQuantity =
+                        int.tryParse(_quantityController.text) ?? 0;
+                    if (currentQuantity > 0) {
+                      _quantityController.text =
+                          (currentQuantity - 1).toString();
+                    }
+                  },
+                ),
+                IconButton(
+                  icon: Icon(Icons.add),
+                  onPressed: () {
+                    int currentQuantity =
+                        int.tryParse(_quantityController.text) ?? 0;
+                    _quantityController.text = (currentQuantity + 1).toString();
+                  },
+                ),
+              ],
+            ),
+            const SizedBox(height: 10),
+            TextField(
+              controller: _phoneController,
+              decoration: InputDecoration(
+                labelText: 'Phone number',
+                border: OutlineInputBorder(
+                  borderRadius: BorderRadius.circular(10.0),
+                ),
+                contentPadding:
+                    const EdgeInsets.symmetric(horizontal: 12.0, vertical: 8.0),
+              ),
+            ),
+            const SizedBox(height: 10),
             TextField(
               controller: _priceController,
               decoration: InputDecoration(
-                border: OutlineInputBorder(),
-                hintText: 'Nhập giá tiền',
+                labelText: 'Price',
+                border: OutlineInputBorder(
+                  borderRadius: BorderRadius.circular(10.0),
+                ),
+                contentPadding:
+                    const EdgeInsets.symmetric(horizontal: 12.0, vertical: 8.0),
               ),
             ),
+            const SizedBox(height: 10),
             TextField(
               controller: _discountController,
               decoration: InputDecoration(
-                border: OutlineInputBorder(),
-                hintText: 'Nhập chiết khấu',
+                labelText: 'Discount',
+                border: OutlineInputBorder(
+                  borderRadius: BorderRadius.circular(10.0),
+                ),
+                contentPadding:
+                    const EdgeInsets.symmetric(horizontal: 12.0, vertical: 8.0),
               ),
+            ),
+            const SizedBox(height: 10),
+            DropdownButtonFormField<String>(
+              value: _selectedPaymentMethod,
+              onChanged: (String? newValue) {
+                setState(() {
+                  _selectedPaymentMethod = newValue!;
+                });
+              },
+              decoration: InputDecoration(
+                labelText: 'Payment Method',
+                border: OutlineInputBorder(
+                  borderRadius: BorderRadius.circular(10.0),
+                ),
+                contentPadding:
+                    EdgeInsets.symmetric(horizontal: 12.0, vertical: 8.0),
+              ),
+              dropdownColor: Colors.white,
+              borderRadius: BorderRadius.circular(10.0),
+              items: <String>[
+                'Cash',
+                'Credit Card',
+                'Debit Card',
+                'Mobile Payment'
+              ].map<DropdownMenuItem<String>>((String value) {
+                return DropdownMenuItem<String>(
+                  value: value,
+                  child: Text(
+                    value,
+                    style: TextStyle(fontSize: 16.0, color: Colors.black),
+                  ),
+                );
+              }).toList(),
+              style: TextStyle(fontSize: 16.0, color: Colors.black),
+              icon: Icon(Icons.arrow_drop_down, color: Colors.black),
+              isExpanded: true,
             ),
             Row(
               children: <Widget>[
