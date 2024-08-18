@@ -22,17 +22,17 @@ class CustomButtonGroup extends StatelessWidget {
       child: Column(
         children: [
           CustomButton(
-            onPressed: onCheckPhoneNumber,
-            backgroundColor: AppColors.primaryColor,
-            textColor: AppColors.textColor,
-            text: 'Check discount',
-          ),
-          const SizedBox(height: 10),
-          CustomButton(
             onPressed: onCalculateDiscount,
             backgroundColor: AppColors.primaryColor,
             textColor: AppColors.textColor,
-            text: 'Calculate Discount',
+            text: 'Payment with discount',
+          ),
+          const SizedBox(height: 10),
+          CustomButton(
+            onPressed: onCheckPhoneNumber,
+            backgroundColor: AppColors.primaryColor,
+            textColor: AppColors.textColor,
+            text: 'Payment with discount from the previous transaction.',
           ),
           const SizedBox(height: 10),
           CustomButton(

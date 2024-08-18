@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:promo_track/utils/colors.dart';
 import 'package:shared_preferences/shared_preferences.dart'; // Đảm bảo import SharedPreferences
 import 'package:promo_track/models/PaymentHistory.dart';
 
@@ -48,6 +49,7 @@ class PaymentHistoryItem extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return Card(
+      color: AppColors.secondaryColor,
       child: Padding(
         padding: const EdgeInsets.symmetric(horizontal: 20, vertical: 16),
         child: Column(
@@ -55,22 +57,29 @@ class PaymentHistoryItem extends StatelessWidget {
           children: [
             Text('Phone: ${paymentHistory.phoneNumber ?? 'N/A'}',
                 style:
-                    const TextStyle(fontSize: 20, fontWeight: FontWeight.bold)),
+                    const TextStyle(fontSize: 20, color: AppColors.textColor)),
             const SizedBox(height: 10),
             Row(
               children: [
                 const Icon(Icons.alarm),
                 const SizedBox(width: 8),
-                Text(paymentHistory.dateTime.toString()),
+                Text(
+                  paymentHistory.dateTime.toString(),
+                  style: const TextStyle(color: AppColors.textColor),
+                ),
                 const Spacer(),
                 TextButton(
                   onPressed: () => _showDetailDialog(context),
-                  child: const Text('View detail'),
+                  child: const Text(
+                    'View detail',
+                    style: TextStyle(color: AppColors.textColor),
+                  ),
                 ),
               ],
             ),
             const SizedBox(height: 10),
-            Text('Payment Method: ${paymentHistory.paymentMethod}'),
+            Text('Payment Method: ${paymentHistory.paymentMethod}',
+                style: const TextStyle(color: AppColors.textColor)),
           ],
         ),
       ),

@@ -29,12 +29,12 @@ class _CheckoutScreenState extends State<CheckoutScreen> {
 
   void _showPurchaseHistory() async {
     final prefs = await SharedPreferences.getInstance();
-    List<String> history = prefs.getStringList('purchase_history') ?? [];
+    List<String> history = prefs.getStringList('payment_history') ?? [];
 
     showDialog(
       context: context,
       builder: (context) => AlertDialog(
-        title: Text('Lịch sử mua'),
+        title: Text('Payment history'),
         content: Column(
           mainAxisSize: MainAxisSize.min,
           children: history.map((entry) => Text(entry)).toList(),
@@ -102,9 +102,100 @@ class _CheckoutScreenState extends State<CheckoutScreen> {
     // await prefs.setString('last_discount', _discountController.text);
     // await prefs.setBool(
     //     'last_discount_applied_directly', _isDiscountAppliedDirectly);
+    _clearFields();
+    setState(() {
+      _isDiscountAppliedDirectly = true; // Hoặc giá trị mặc định bạn muốn
+    });
   }
 
-  void _checkPhoneNumber() async {}
+  void _clearFields() {
+    setState(() {
+      _phoneController.clear();
+      _priceController.clear();
+      _discountController.clear();
+      _productNameController.clear();
+      _quantityController.clear();
+      _dateTimeController.clear();
+      _isDiscountAppliedDirectly =
+          true; // Đặt lại trạng thái chiết khấu trực tiếp về mặc định
+    });
+  }
+
+  void _checkPhoneNumber() async {
+    final prefs = await SharedPreferences.getInstance();
+    List<String>? paymentHistory = prefs.getStringList('payment_history');
+    List<String>? detailHistory = prefs.getStringList('detail_payment_history');
+    String phoneNumber = _phoneController.text;
+
+    // Check if paymentHistory and detailHistory are not null
+    if (paymentHistory == null || detailHistory == null) {
+      _showErrorDialog('Payment history or detail history is not available.');
+      return;
+    }
+
+    // Continue with filtering and processing
+    List<Map<String, dynamic>> relevantIds = paymentHistory
+        .where((entry) => entry.contains('Phone Number: $phoneNumber'))
+        .map((entry) {
+      final id = entry
+          .split(', ')
+          .firstWhere((part) => part.contains('ID: '))
+          .split(': ')
+          .last;
+      final dateTimeStr = entry
+          .split(', ')
+          .firstWhere((part) => part.contains('DateTime: '))
+          .split(': ')
+          .last;
+      final dateTime = DateFormat('yyyy-MM-dd HH:mm').parse(dateTimeStr);
+      return {'id': id, 'dateTime': dateTime};
+    }).toList();
+
+    if (relevantIds.isEmpty) {
+      _showErrorDialog('No payment history found for this phone number.');
+      return;
+    }
+
+    relevantIds.sort((a, b) => b['dateTime'].compareTo(a['dateTime']));
+    final latestId = relevantIds.first['id'];
+
+    final latestDetailEntries = detailHistory
+        .where((entry) => entry.contains('ID: $latestId'))
+        .map((entry) {
+      final appliedDirectlyStr = entry
+          .split(', ')
+          .firstWhere((part) => part.contains('Applied Directly: '))
+          .split(': ')
+          .last;
+      final appliedDirectly = appliedDirectlyStr.toLowerCase() == 'true';
+      return {'appliedDirectly': appliedDirectly};
+    }).toList();
+
+    if (latestDetailEntries.isEmpty) {
+      _showErrorDialog('No details found for the latest payment ID.');
+      return;
+    }
+
+    final latestEntry = latestDetailEntries.first;
+    final appliedDirectly = latestEntry['appliedDirectly'];
+
+    if (appliedDirectly != null && appliedDirectly) {
+      _showErrorDialog(
+          'Discount has already been applied directly for this phone number.');
+      setState(() {
+        _isDiscountAppliedDirectly =
+            false; // Uncheck the checkbox if discount was applied
+      });
+    } else {
+      _showErrorDialog(
+          'Discount was successfully converted for this phone number.');
+      setState(() {
+        _isDiscountAppliedDirectly =
+            true; // Check the checkbox if discount was converted
+        _calculateDiscount();
+      });
+    }
+  }
 
   void _calculateDiscount() {
     final price = double.tryParse(_priceController.text) ?? 0;
