@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:promo_track/models/PaymentHistory.dart';
+import 'package:promo_track/utils/colors.dart';
 import 'package:promo_track/widgets/purchased_item.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 
@@ -59,25 +60,41 @@ class PaymentHistoryList extends StatelessWidget {
   Widget build(BuildContext context) {
     return Scaffold(
       appBar: AppBar(
-        title: const Text('Purchase History'),
+        title: const Text('Purchase History',
+            style: TextStyle(fontSize: 24, color: AppColors.textColor)),
+        backgroundColor: AppColors.primaryColor,
+        iconTheme: const IconThemeData(
+          color: AppColors.textColor, // Màu của các icon, bao gồm nút back
+        ),
       ),
-      body: FutureBuilder<List<PaymentHistory>>(
-        future: _loadPaymentHistory(),
-        builder: (ctx, snapshot) {
-          if (snapshot.connectionState == ConnectionState.waiting) {
-            return const Center(child: CircularProgressIndicator());
-          } else if (snapshot.hasError) {
-            return Center(child: Text('An error occurred: ${snapshot.error}'));
-          } else if (!snapshot.hasData || snapshot.data!.isEmpty) {
-            return const Center(child: Text('No payment histories available.'));
-          } else {
-            return ListView.builder(
-              itemCount: snapshot.data!.length,
-              itemBuilder: (ctx, index) =>
-                  PaymentHistoryItem(paymentHistory: snapshot.data![index]),
-            );
-          }
-        },
+      body: Container(
+        decoration: const BoxDecoration(
+          gradient: LinearGradient(
+            begin: Alignment.topLeft,
+            end: Alignment.bottomRight,
+            colors: [AppColors.primaryColor, AppColors.secondaryColor],
+          ),
+        ),
+        child: FutureBuilder<List<PaymentHistory>>(
+          future: _loadPaymentHistory(),
+          builder: (ctx, snapshot) {
+            if (snapshot.connectionState == ConnectionState.waiting) {
+              return const Center(child: CircularProgressIndicator());
+            } else if (snapshot.hasError) {
+              return Center(
+                  child: Text('An error occurred: ${snapshot.error}'));
+            } else if (!snapshot.hasData || snapshot.data!.isEmpty) {
+              return const Center(
+                  child: Text('No payment histories available.'));
+            } else {
+              return ListView.builder(
+                itemCount: snapshot.data!.length,
+                itemBuilder: (ctx, index) =>
+                    PaymentHistoryItem(paymentHistory: snapshot.data![index]),
+              );
+            }
+          },
+        ),
       ),
     );
   }

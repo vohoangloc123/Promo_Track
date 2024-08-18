@@ -1,5 +1,7 @@
 import 'package:flutter/material.dart';
+import 'package:promo_track/utils/colors.dart';
 import 'package:promo_track/utils/random_utils.dart';
+import 'package:promo_track/widgets/custom_button.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 import 'package:intl/intl.dart';
 
@@ -94,10 +96,26 @@ class _CheckoutScreenState extends State<CheckoutScreen> {
   Widget build(BuildContext context) {
     return Scaffold(
       appBar: AppBar(
-        title: const Text('Checkout Screen'),
+        title: const Text(
+          'Checkout Screen',
+          style: TextStyle(
+            fontSize: 24,
+            color: AppColors.textColor, // Màu chữ tiêu đề
+          ),
+        ),
+        backgroundColor: AppColors.primaryColor, // Màu nền của AppBar
+        iconTheme: const IconThemeData(
+          color: AppColors.textColor, // Màu của các icon trong AppBar
+        ),
       ),
-      body: Padding(
-        padding: const EdgeInsets.all(16.0),
+      body: Container(
+        decoration: const BoxDecoration(
+          gradient: LinearGradient(
+            begin: Alignment.topLeft,
+            end: Alignment.bottomRight,
+            colors: [AppColors.primaryColor, AppColors.secondaryColor],
+          ),
+        ),
         child: Column(
           children: <Widget>[
             const SizedBox(height: 10),
@@ -105,12 +123,16 @@ class _CheckoutScreenState extends State<CheckoutScreen> {
               controller: _productNameController,
               decoration: InputDecoration(
                 labelText: 'Product Name',
-                border: OutlineInputBorder(
+                labelStyle: const TextStyle(color: AppColors.textColor),
+                enabledBorder: OutlineInputBorder(
+                  borderSide: const BorderSide(
+                      color: Colors.white), // Màu viền khi không focus
                   borderRadius: BorderRadius.circular(10.0),
                 ),
                 contentPadding:
                     const EdgeInsets.symmetric(horizontal: 12.0, vertical: 8.0),
               ),
+              style: const TextStyle(color: AppColors.textColor),
             ),
             const SizedBox(height: 10),
             Row(
@@ -120,7 +142,10 @@ class _CheckoutScreenState extends State<CheckoutScreen> {
                     controller: _quantityController,
                     decoration: InputDecoration(
                       labelText: 'Quantity',
-                      border: OutlineInputBorder(
+                      labelStyle: const TextStyle(color: AppColors.textColor),
+                      enabledBorder: OutlineInputBorder(
+                        borderSide: const BorderSide(
+                            color: Colors.white), // Màu viền khi không focus
                         borderRadius: BorderRadius.circular(10.0),
                       ),
                       contentPadding: const EdgeInsets.symmetric(
@@ -128,6 +153,7 @@ class _CheckoutScreenState extends State<CheckoutScreen> {
                     ),
                     keyboardType: TextInputType.number,
                     textAlign: TextAlign.left,
+                    style: const TextStyle(color: AppColors.textColor),
                   ),
                 ),
                 IconButton(
@@ -156,36 +182,48 @@ class _CheckoutScreenState extends State<CheckoutScreen> {
               controller: _phoneController,
               decoration: InputDecoration(
                 labelText: 'Phone number',
-                border: OutlineInputBorder(
+                labelStyle: const TextStyle(color: AppColors.textColor),
+                enabledBorder: OutlineInputBorder(
+                  borderSide: const BorderSide(
+                      color: Colors.white), // Màu viền khi không focus
                   borderRadius: BorderRadius.circular(10.0),
                 ),
                 contentPadding:
                     const EdgeInsets.symmetric(horizontal: 12.0, vertical: 8.0),
               ),
+              style: const TextStyle(color: AppColors.textColor),
             ),
             const SizedBox(height: 10),
             TextField(
               controller: _priceController,
               decoration: InputDecoration(
                 labelText: 'Price',
-                border: OutlineInputBorder(
+                labelStyle: const TextStyle(color: AppColors.textColor),
+                enabledBorder: OutlineInputBorder(
+                  borderSide: const BorderSide(
+                      color: Colors.white), // Màu viền khi không focus
                   borderRadius: BorderRadius.circular(10.0),
                 ),
                 contentPadding:
                     const EdgeInsets.symmetric(horizontal: 12.0, vertical: 8.0),
               ),
+              style: const TextStyle(color: AppColors.textColor),
             ),
             const SizedBox(height: 10),
             TextField(
               controller: _discountController,
               decoration: InputDecoration(
                 labelText: 'Discount',
-                border: OutlineInputBorder(
+                labelStyle: const TextStyle(color: AppColors.textColor),
+                enabledBorder: OutlineInputBorder(
+                  borderSide: const BorderSide(
+                      color: Colors.white), // Màu viền khi không focus
                   borderRadius: BorderRadius.circular(10.0),
                 ),
                 contentPadding:
                     const EdgeInsets.symmetric(horizontal: 12.0, vertical: 8.0),
               ),
+              style: const TextStyle(color: AppColors.textColor),
             ),
             const SizedBox(height: 10),
             DropdownButtonFormField<String>(
@@ -197,7 +235,10 @@ class _CheckoutScreenState extends State<CheckoutScreen> {
               },
               decoration: InputDecoration(
                 labelText: 'Payment Method',
-                border: OutlineInputBorder(
+                labelStyle: const TextStyle(color: AppColors.textColor),
+                enabledBorder: OutlineInputBorder(
+                  borderSide: const BorderSide(
+                      color: Colors.white), // Màu viền khi không focus
                   borderRadius: BorderRadius.circular(10.0),
                 ),
                 contentPadding:
@@ -215,11 +256,13 @@ class _CheckoutScreenState extends State<CheckoutScreen> {
                   value: value,
                   child: Text(
                     value,
-                    style: const TextStyle(fontSize: 16.0, color: Colors.black),
+                    style: const TextStyle(
+                        fontSize: 16.0, color: AppColors.textColor),
                   ),
                 );
               }).toList(),
-              style: const TextStyle(fontSize: 16.0, color: Colors.black),
+              style:
+                  const TextStyle(fontSize: 16.0, color: AppColors.textColor),
               icon: const Icon(Icons.arrow_drop_down, color: Colors.black),
               isExpanded: true,
             ),
@@ -233,26 +276,47 @@ class _CheckoutScreenState extends State<CheckoutScreen> {
                     });
                   },
                 ),
-                const Text('Trừ trực tiếp'),
+                const Text(
+                  'Direct deduction from price',
+                  style: TextStyle(color: AppColors.textColor),
+                ),
               ],
             ),
-            ElevatedButton(
-              onPressed: _calculateDiscount,
-              child: const Text('Tính tiền'),
-            ),
-            ElevatedButton(
-              onPressed: _generateRandomValues,
-              child: const Text('Generate Random Values'),
-            ),
-            SizedBox(height: 20),
-            ElevatedButton(
-              onPressed: _showPurchaseHistory,
-              child: const Text('Xem lịch sử mua'),
-            ),
             Text(
-              'Số tiền sau khi tính toán: \$${_calculatedPrice.toStringAsFixed(2)}',
-              style: const TextStyle(fontSize: 16, fontWeight: FontWeight.bold),
+              'The amount after calculation.: \$${_calculatedPrice.toStringAsFixed(2)}',
+              style: const TextStyle(
+                  fontSize: 16,
+                  fontWeight: FontWeight.bold,
+                  color: AppColors.textColor),
             ),
+            const SizedBox(height: 10),
+            Padding(
+              padding: const EdgeInsets.symmetric(horizontal: 16.0),
+              child: Column(
+                children: [
+                  CustomButton(
+                    onPressed: _calculateDiscount,
+                    backgroundColor: AppColors.primaryColor,
+                    textColor: AppColors.textColor,
+                    text: 'Calculate Discount',
+                  ),
+                  const SizedBox(height: 10),
+                  CustomButton(
+                    onPressed: _generateRandomValues,
+                    backgroundColor: AppColors.primaryColor,
+                    textColor: AppColors.textColor,
+                    text: 'Generate Random Values',
+                  ),
+                  const SizedBox(height: 10),
+                  CustomButton(
+                    onPressed: _showPurchaseHistory,
+                    backgroundColor: AppColors.primaryColor,
+                    textColor: AppColors.textColor,
+                    text: 'Show Purchase History',
+                  )
+                ],
+              ),
+            )
           ],
         ),
       ),
