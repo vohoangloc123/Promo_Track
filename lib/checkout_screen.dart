@@ -2,6 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:promo_track/utils/colors.dart';
 import 'package:promo_track/utils/random_utils.dart';
 import 'package:promo_track/widgets/custom_button.dart';
+import 'package:promo_track/widgets/custom_button_group.dart';
 import 'package:promo_track/widgets/custom_textfield.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 import 'package:intl/intl.dart';
@@ -117,168 +118,149 @@ class _CheckoutScreenState extends State<CheckoutScreen> {
             colors: [AppColors.primaryColor, AppColors.secondaryColor],
           ),
         ),
-        child: Column(
-          children: <Widget>[
-            const SizedBox(height: 10),
-            CustomTextfield(
-              onPressed: _productNameController,
-              color: AppColors.textColor,
-              textLabel: const Text('Product Name'),
-            ),
-            const SizedBox(height: 10),
-            Row(
-              children: [
-                Expanded(
-                  child: TextField(
-                    controller: _quantityController,
-                    decoration: InputDecoration(
-                      labelText: 'Quantity',
-                      labelStyle: const TextStyle(color: AppColors.textColor),
-                      enabledBorder: OutlineInputBorder(
-                        borderSide: const BorderSide(
-                            color: Colors.white), // Màu viền khi không focus
-                        borderRadius: BorderRadius.circular(10.0),
-                      ),
-                      contentPadding: const EdgeInsets.symmetric(
-                          horizontal: 12.0, vertical: 8.0),
-                    ),
-                    keyboardType: TextInputType.number,
-                    textAlign: TextAlign.left,
-                    style: const TextStyle(color: AppColors.textColor),
-                  ),
-                ),
-                IconButton(
-                  icon: const Icon(Icons.remove),
-                  onPressed: () {
-                    int currentQuantity =
-                        int.tryParse(_quantityController.text) ?? 0;
-                    if (currentQuantity > 0) {
-                      _quantityController.text =
-                          (currentQuantity - 1).toString();
-                    }
-                  },
-                ),
-                IconButton(
-                  icon: const Icon(Icons.add),
-                  onPressed: () {
-                    int currentQuantity =
-                        int.tryParse(_quantityController.text) ?? 0;
-                    _quantityController.text = (currentQuantity + 1).toString();
-                  },
-                ),
-              ],
-            ),
-            const SizedBox(height: 10),
-            CustomTextfield(
-              onPressed: _phoneController,
-              color: AppColors.textColor,
-              textLabel: const Text('Phone Number'),
-            ),
-            const SizedBox(height: 10),
-            CustomTextfield(
-              onPressed: _priceController,
-              color: AppColors.textColor,
-              textLabel: const Text('Price'),
-            ),
-            const SizedBox(height: 10),
-            CustomTextfield(
-              onPressed: _discountController,
-              color: AppColors.textColor,
-              textLabel: const Text('Discount (%)'),
-            ),
-            const SizedBox(height: 10),
-            DropdownButtonFormField<String>(
-              value: _selectedPaymentMethod,
-              onChanged: (String? newValue) {
-                setState(() {
-                  _selectedPaymentMethod = newValue!;
-                });
-              },
-              decoration: InputDecoration(
-                labelText: 'Payment Method',
-                labelStyle: const TextStyle(color: AppColors.textColor),
-                enabledBorder: OutlineInputBorder(
-                  borderSide: const BorderSide(
-                      color: Colors.white), // Màu viền khi không focus
-                  borderRadius: BorderRadius.circular(10.0),
-                ),
-                contentPadding:
-                    const EdgeInsets.symmetric(horizontal: 12.0, vertical: 8.0),
+        child: Padding(
+          padding: const EdgeInsets.all(8.0),
+          child: Column(
+            children: <Widget>[
+              const SizedBox(height: 10),
+              CustomTextfield(
+                onPressed: _productNameController,
+                color: AppColors.textColor,
+                textLabel: const Text('Product Name'),
               ),
-              dropdownColor: Colors.white,
-              borderRadius: BorderRadius.circular(10.0),
-              items: <String>[
-                'Cash',
-                'Credit Card',
-                'Debit Card',
-                'Mobile Payment'
-              ].map<DropdownMenuItem<String>>((String value) {
-                return DropdownMenuItem<String>(
-                  value: value,
-                  child: Text(
-                    value,
-                    style: const TextStyle(
-                        fontSize: 16.0, color: AppColors.textColor),
-                  ),
-                );
-              }).toList(),
-              style:
-                  const TextStyle(fontSize: 16.0, color: AppColors.textColor),
-              icon: const Icon(Icons.arrow_drop_down, color: Colors.black),
-              isExpanded: true,
-            ),
-            Row(
-              children: <Widget>[
-                Checkbox(
-                  value: _isDiscountAppliedDirectly,
-                  onChanged: (value) {
-                    setState(() {
-                      _isDiscountAppliedDirectly = value ?? true;
-                    });
-                  },
-                ),
-                const Text(
-                  'Direct deduction from price',
-                  style: TextStyle(color: AppColors.textColor),
-                ),
-              ],
-            ),
-            Text(
-              'The amount after calculation.: \$${_calculatedPrice.toStringAsFixed(2)}',
-              style: const TextStyle(
-                  fontSize: 16,
-                  fontWeight: FontWeight.bold,
-                  color: AppColors.textColor),
-            ),
-            const SizedBox(height: 10),
-            Padding(
-              padding: const EdgeInsets.symmetric(horizontal: 16.0),
-              child: Column(
+              const SizedBox(height: 10),
+              Row(
                 children: [
-                  CustomButton(
-                    onPressed: _calculateDiscount,
-                    backgroundColor: AppColors.primaryColor,
-                    textColor: AppColors.textColor,
-                    text: 'Calculate Discount',
+                  Expanded(
+                    child: TextField(
+                      controller: _quantityController,
+                      decoration: InputDecoration(
+                        labelText: 'Quantity',
+                        labelStyle: const TextStyle(color: AppColors.textColor),
+                        enabledBorder: OutlineInputBorder(
+                          borderSide: const BorderSide(
+                              color: Colors.white), // Màu viền khi không focus
+                          borderRadius: BorderRadius.circular(10.0),
+                        ),
+                        contentPadding: const EdgeInsets.symmetric(
+                            horizontal: 12.0, vertical: 8.0),
+                      ),
+                      keyboardType: TextInputType.number,
+                      textAlign: TextAlign.left,
+                      style: const TextStyle(color: AppColors.textColor),
+                    ),
                   ),
-                  const SizedBox(height: 10),
-                  CustomButton(
-                    onPressed: _generateRandomValues,
-                    backgroundColor: AppColors.primaryColor,
-                    textColor: AppColors.textColor,
-                    text: 'Generate Random Values',
+                  IconButton(
+                    icon: const Icon(Icons.remove),
+                    onPressed: () {
+                      int currentQuantity =
+                          int.tryParse(_quantityController.text) ?? 0;
+                      if (currentQuantity > 0) {
+                        _quantityController.text =
+                            (currentQuantity - 1).toString();
+                      }
+                    },
                   ),
-                  const SizedBox(height: 10),
-                  CustomButton(
-                    onPressed: _showPurchaseHistory,
-                    backgroundColor: AppColors.primaryColor,
-                    textColor: AppColors.textColor,
-                    text: 'Show Purchase History',
-                  )
+                  IconButton(
+                    icon: const Icon(Icons.add),
+                    onPressed: () {
+                      int currentQuantity =
+                          int.tryParse(_quantityController.text) ?? 0;
+                      _quantityController.text =
+                          (currentQuantity + 1).toString();
+                    },
+                  ),
                 ],
               ),
-            )
-          ],
+              const SizedBox(height: 10),
+              CustomTextfield(
+                onPressed: _phoneController,
+                color: AppColors.textColor,
+                textLabel: const Text('Phone Number'),
+              ),
+              const SizedBox(height: 10),
+              CustomTextfield(
+                onPressed: _priceController,
+                color: AppColors.textColor,
+                textLabel: const Text('Price'),
+              ),
+              const SizedBox(height: 10),
+              CustomTextfield(
+                onPressed: _discountController,
+                color: AppColors.textColor,
+                textLabel: const Text('Discount (%)'),
+              ),
+              const SizedBox(height: 10),
+              DropdownButtonFormField<String>(
+                value: _selectedPaymentMethod,
+                onChanged: (String? newValue) {
+                  setState(() {
+                    _selectedPaymentMethod = newValue!;
+                  });
+                },
+                decoration: InputDecoration(
+                  labelText: 'Payment Method',
+                  labelStyle: const TextStyle(color: AppColors.textColor),
+                  enabledBorder: OutlineInputBorder(
+                    borderSide: const BorderSide(color: Colors.white),
+                    borderRadius: BorderRadius.circular(10.0),
+                  ),
+                  contentPadding: const EdgeInsets.symmetric(
+                      horizontal: 12.0, vertical: 8.0),
+                ),
+                dropdownColor: Colors.white,
+                borderRadius: BorderRadius.circular(10.0),
+                items: <String>[
+                  'Cash',
+                  'Credit Card',
+                  'Debit Card',
+                  'Mobile Payment'
+                ].map<DropdownMenuItem<String>>((String value) {
+                  return DropdownMenuItem<String>(
+                    value: value,
+                    child: Text(
+                      value,
+                      style: const TextStyle(
+                          fontSize: 16.0, color: AppColors.textColor),
+                    ),
+                  );
+                }).toList(),
+                style:
+                    const TextStyle(fontSize: 16.0, color: AppColors.textColor),
+                icon: const Icon(Icons.arrow_drop_down, color: Colors.black),
+                isExpanded: true,
+              ),
+              Row(
+                children: <Widget>[
+                  Checkbox(
+                    value: _isDiscountAppliedDirectly,
+                    onChanged: (value) {
+                      setState(() {
+                        _isDiscountAppliedDirectly = value ?? true;
+                      });
+                    },
+                  ),
+                  const Text(
+                    'Direct deduction from price',
+                    style: TextStyle(color: AppColors.textColor),
+                  ),
+                ],
+              ),
+              Text(
+                'The amount after calculation.: \$${_calculatedPrice.toStringAsFixed(2)}',
+                style: const TextStyle(
+                    fontSize: 16,
+                    fontWeight: FontWeight.bold,
+                    color: AppColors.textColor),
+              ),
+              const SizedBox(height: 10),
+              CustomButtonGroup(
+                onCalculateDiscount: _calculateDiscount,
+                onGenerateRandomValues: _generateRandomValues,
+                onShowPurchaseHistory: _showPurchaseHistory,
+              )
+            ],
+          ),
         ),
       ),
     );
