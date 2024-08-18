@@ -25,14 +25,14 @@ class CustomButtonGroup extends StatelessWidget {
             onPressed: onCalculateDiscount,
             backgroundColor: AppColors.primaryColor,
             textColor: AppColors.textColor,
-            text: 'Payment with discount',
+            text: 'Pay with discount',
           ),
           const SizedBox(height: 10),
           CustomButton(
             onPressed: onCheckPhoneNumber,
             backgroundColor: AppColors.primaryColor,
             textColor: AppColors.textColor,
-            text: 'Payment with discount from the previous transaction.',
+            text: 'Pay with previous discount.',
           ),
           const SizedBox(height: 10),
           CustomButton(
