@@ -225,29 +225,40 @@ class _CheckoutScreenState extends State<CheckoutScreen> {
     print('Price: $price');
 
     if (price <= 0 || discountPercentage < 0) {
-      _showErrorDialog('Vui lòng nhập giá tiền và chiết khấu hợp lệ.');
+      _showErrorDialog('Please enter a valid price and discount.');
       return;
     }
-    if (discountPercentage > 100) {
-      _showErrorDialog('Chiết khấu không thể lớn hơn 100%.');
+    if (discountPercentage <= 0 || discountPercentage > 100) {
+      _showErrorDialog(
+          'Discount must be a number between 1 and 100 and cannot be empty.');
       return;
-    }
-    if (_quantityController.text.isEmpty) {
-      _showErrorDialog('Vui lòng nhập số lượng.');
+    } else if (_quantityController.text.isEmpty) {
+      _showErrorDialog('Please enter the quantity.');
       return;
     } else if (int.tryParse(_quantityController.text) == 0) {
-      _showErrorDialog('Số lượng phải lớn hơn 0.');
+      _showErrorDialog('Quantity must be greater than 0.');
       return;
     } else if (int.tryParse(_quantityController.text) == null) {
-      _showErrorDialog('Số lượng phải là số.');
+      _showErrorDialog('Quantity must be a number.');
+      return;
+    }
+
+    if (_quantityController.text.isEmpty) {
+      _showErrorDialog('Please enter the quantity.');
+      return;
+    } else if (int.tryParse(_quantityController.text) == 0) {
+      _showErrorDialog('Quantity must be greater than 0.');
+      return;
+    } else if (int.tryParse(_quantityController.text) == null) {
+      _showErrorDialog('Quantity must be a number.');
       return;
     }
     if (_productNameController.text.isEmpty) {
-      _showErrorDialog('Vui lòng nhập tên sản phẩm.');
+      _showErrorDialog('Please enter the product name.');
       return;
     }
     if (_phoneController.text.isEmpty) {
-      _showErrorDialog('Vui lòng nhập số điện thoại.');
+      _showErrorDialog('Please enter the phone number.');
       return;
     }
     double quantity = _quantityController.text.isEmpty
