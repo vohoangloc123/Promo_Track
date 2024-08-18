@@ -2,6 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:promo_track/utils/colors.dart';
 import 'package:promo_track/utils/random_utils.dart';
 import 'package:promo_track/widgets/custom_button.dart';
+import 'package:promo_track/widgets/custom_textfield.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 import 'package:intl/intl.dart';
 
@@ -119,20 +120,10 @@ class _CheckoutScreenState extends State<CheckoutScreen> {
         child: Column(
           children: <Widget>[
             const SizedBox(height: 10),
-            TextField(
-              controller: _productNameController,
-              decoration: InputDecoration(
-                labelText: 'Product Name',
-                labelStyle: const TextStyle(color: AppColors.textColor),
-                enabledBorder: OutlineInputBorder(
-                  borderSide: const BorderSide(
-                      color: Colors.white), // Màu viền khi không focus
-                  borderRadius: BorderRadius.circular(10.0),
-                ),
-                contentPadding:
-                    const EdgeInsets.symmetric(horizontal: 12.0, vertical: 8.0),
-              ),
-              style: const TextStyle(color: AppColors.textColor),
+            CustomTextfield(
+              onPressed: _productNameController,
+              color: AppColors.textColor,
+              textLabel: const Text('Product Name'),
             ),
             const SizedBox(height: 10),
             Row(
@@ -178,52 +169,22 @@ class _CheckoutScreenState extends State<CheckoutScreen> {
               ],
             ),
             const SizedBox(height: 10),
-            TextField(
-              controller: _phoneController,
-              decoration: InputDecoration(
-                labelText: 'Phone number',
-                labelStyle: const TextStyle(color: AppColors.textColor),
-                enabledBorder: OutlineInputBorder(
-                  borderSide: const BorderSide(
-                      color: Colors.white), // Màu viền khi không focus
-                  borderRadius: BorderRadius.circular(10.0),
-                ),
-                contentPadding:
-                    const EdgeInsets.symmetric(horizontal: 12.0, vertical: 8.0),
-              ),
-              style: const TextStyle(color: AppColors.textColor),
+            CustomTextfield(
+              onPressed: _phoneController,
+              color: AppColors.textColor,
+              textLabel: const Text('Phone Number'),
             ),
             const SizedBox(height: 10),
-            TextField(
-              controller: _priceController,
-              decoration: InputDecoration(
-                labelText: 'Price',
-                labelStyle: const TextStyle(color: AppColors.textColor),
-                enabledBorder: OutlineInputBorder(
-                  borderSide: const BorderSide(
-                      color: Colors.white), // Màu viền khi không focus
-                  borderRadius: BorderRadius.circular(10.0),
-                ),
-                contentPadding:
-                    const EdgeInsets.symmetric(horizontal: 12.0, vertical: 8.0),
-              ),
-              style: const TextStyle(color: AppColors.textColor),
+            CustomTextfield(
+              onPressed: _priceController,
+              color: AppColors.textColor,
+              textLabel: const Text('Price'),
             ),
             const SizedBox(height: 10),
-            TextField(
-              controller: _discountController,
-              decoration: InputDecoration(
-                labelText: 'Discount',
-                labelStyle: const TextStyle(color: AppColors.textColor),
-                enabledBorder: OutlineInputBorder(
-                  borderSide: const BorderSide(
-                      color: Colors.white), // Màu viền khi không focus
-                  borderRadius: BorderRadius.circular(10.0),
-                ),
-                contentPadding:
-                    const EdgeInsets.symmetric(horizontal: 12.0, vertical: 8.0),
-              ),
-              style: const TextStyle(color: AppColors.textColor),
+            CustomTextfield(
+              onPressed: _discountController,
+              color: AppColors.textColor,
+              textLabel: const Text('Discount (%)'),
             ),
             const SizedBox(height: 10),
             DropdownButtonFormField<String>(
