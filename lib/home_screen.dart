@@ -1,7 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:promo_track/utils/colors.dart';
 import 'package:promo_track/widgets/custom_button.dart';
-import 'package:promo_track/widgets/payment_list.dart';
+import 'package:promo_track/widgets/payment_history_list.dart';
 import 'checkout_screen.dart';
 
 class HomeScreen extends StatefulWidget {

@@ -74,18 +74,23 @@ class _CheckoutScreenState extends State<CheckoutScreen> {
     DateTime now = DateTime.now();
     String formattedDateTime = DateFormat('yyyy-MM-dd HH:mm').format(now);
     // Lưu thông tin lịch sử
-    List<String> history = prefs.getStringList('purchase_history') ?? [];
+    List<String> history = prefs.getStringList('payment_history') ?? [];
+    List<String> detailHistory =
+        prefs.getStringList('detail_payment_history') ?? [];
     String historyEntry =
-        'ID: $currentId, DateTime: $formattedDateTime, Product name: ${_productNameController.text}, Quantity: ${_quantityController.text}, Price: ${_priceController.text}, Discount: ${_discountController.text}, Applied Directly: ${_isDiscountAppliedDirectly},  Payment Method: $_selectedPaymentMethod';
+        'ID: $currentId, DateTime: $formattedDateTime, Phone Number: ${_phoneController.text},  Payment Method: $_selectedPaymentMethod';
     history.add(historyEntry);
-    await prefs.setStringList('purchase_history', history);
-
+    await prefs.setStringList('payment_history', history);
+    String detailHistoryEntry =
+        'ID: $currentId, Product name: ${_productNameController.text}, Quantity: ${_quantityController.text}, Price: ${_priceController.text}, Discount: ${_discountController.text}, Applied Directly: ${_isDiscountAppliedDirectly}';
+    detailHistory.add(detailHistoryEntry);
+    await prefs.setStringList('detail_payment_history', detailHistory);
     // Lưu ID hiện tại để sử dụng cho lần tiếp theo
     await prefs.setInt('purchase_id', currentId);
 
     // Hiển thị thông báo Snackbar
     print("Saved History: $historyEntry");
-
+    print("Saved Detail History: $detailHistoryEntry");
     // Lưu thông tin chiết khấu
     await prefs.setString('last_discount', _discountController.text);
     await prefs.setBool(

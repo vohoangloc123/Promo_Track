@@ -1,7 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:promo_track/models/PaymentHistory.dart';
 import 'package:promo_track/utils/colors.dart';
-import 'package:promo_track/widgets/purchased_item.dart';
+import 'package:promo_track/widgets/payment_history_item.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 
 class PaymentHistoryList extends StatelessWidget {
@@ -9,8 +9,7 @@ class PaymentHistoryList extends StatelessWidget {
 
   Future<List<PaymentHistory>> _loadPaymentHistory() async {
     final prefs = await SharedPreferences.getInstance();
-    List<String>? historyStrings =
-        prefs.getStringList('purchase_history') ?? [];
+    List<String>? historyStrings = prefs.getStringList('payment_history') ?? [];
 
     return historyStrings.map((historyString) {
       // Tách chuỗi dữ liệu theo định dạng
@@ -27,16 +26,8 @@ class PaymentHistoryList extends StatelessWidget {
             historyMap['id'] = int.parse(value);
           } else if (key == 'DateTime') {
             historyMap['dateTime'] = DateTime.parse(value);
-          } else if (key == 'Product name') {
-            historyMap['productName'] = value;
-          } else if (key == 'Quantity') {
-            historyMap['quantity'] = int.parse(value);
-          } else if (key == 'Price') {
-            historyMap['price'] = double.parse(value);
-          } else if (key == 'Discount') {
-            historyMap['discount'] = double.parse(value.replaceAll('%', ''));
-          } else if (key == 'Applied Directly') {
-            historyMap['appliedDirectly'] = value.toLowerCase() == 'true';
+          } else if (key == 'Phone Number') {
+            historyMap['phoneNumber'] = value;
           } else if (key == 'Payment Method') {
             historyMap['paymentMethod'] = value;
           }
@@ -46,11 +37,7 @@ class PaymentHistoryList extends StatelessWidget {
       return PaymentHistory(
         id: historyMap['id'],
         dateTime: historyMap['dateTime'],
-        productName: historyMap['productName'],
-        quantity: historyMap['quantity'],
-        price: historyMap['price'],
-        discount: historyMap['discount'],
-        appliedDirectly: historyMap['appliedDirectly'],
+        phoneNumber: historyMap['phoneNumber'],
         paymentMethod: historyMap['paymentMethod'],
       );
     }).toList();
