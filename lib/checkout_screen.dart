@@ -210,8 +210,6 @@ class _CheckoutScreenState extends State<CheckoutScreen> {
             false; // Uncheck the checkbox if discount was applied
       });
     } else {
-      _showErrorDialog(
-          'Discount was successfully converted for this phone number.');
       setState(() {
         _isDiscountAppliedDirectly =
             true; // Check the checkbox if discount was converted
@@ -267,13 +265,25 @@ class _CheckoutScreenState extends State<CheckoutScreen> {
     setState(() {
       _calculatedPrice = discountedPrice; // Cập nhật giá tiền đã tính toán
     });
+    showDialog(
+      context: context,
+      builder: (context) => AlertDialog(
+        title: Text('Payment successful'),
+        actions: <Widget>[
+          TextButton(
+            child: Text('OK'),
+            onPressed: () => Navigator.of(context).pop(),
+          ),
+        ],
+      ),
+    );
   }
 
   void _showErrorDialog(String message) {
     showDialog(
       context: context,
       builder: (context) => AlertDialog(
-        title: Text('Lỗi'),
+        title: Text('Notice'),
         content: Text(message),
         actions: <Widget>[
           TextButton(
