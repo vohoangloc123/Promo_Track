@@ -65,7 +65,7 @@ class CustomForm extends StatelessWidget {
                 ),
               ),
               IconButton(
-                icon: const Icon(Icons.remove),
+                icon: const Icon(Icons.remove, color: Colors.white),
                 onPressed: () {
                   int currentQuantity =
                       int.tryParse(quantityController.text) ?? 0;
@@ -75,7 +75,7 @@ class CustomForm extends StatelessWidget {
                 },
               ),
               IconButton(
-                icon: const Icon(Icons.add),
+                icon: const Icon(Icons.add, color: Colors.white),
                 onPressed: () {
                   int currentQuantity =
                       int.tryParse(quantityController.text) ?? 0;
@@ -118,7 +118,7 @@ class CustomForm extends StatelessWidget {
               contentPadding:
                   const EdgeInsets.symmetric(horizontal: 12.0, vertical: 8.0),
             ),
-            dropdownColor: Colors.white,
+            dropdownColor: AppColors.primaryColor,
             borderRadius: BorderRadius.circular(10.0),
             items: <String>[
               'Cash',
