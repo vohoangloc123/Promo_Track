@@ -17,6 +17,8 @@ class _HomeScreenState extends State<HomeScreen> {
 
   @override
   Widget build(BuildContext context) {
+    final isWideScreen = MediaQuery.of(context).size.width > 600;
+
     return Scaffold(
       appBar: AppBar(
         title: const Text(
@@ -52,31 +54,86 @@ class _HomeScreenState extends State<HomeScreen> {
                     color: const Color.fromARGB(100, 255, 255, 255),
                   ),
                   const SizedBox(height: 40),
-                  CustomButton(
-                    onPressed: () {
-                      Navigator.push(
-                        context,
-                        MaterialPageRoute(
-                            builder: (context) => CheckoutScreen()),
-                      );
-                    },
-                    backgroundColor: AppColors.primaryColor,
-                    textColor: AppColors.textColor,
-                    text: 'Add Order',
-                  ),
-                  const SizedBox(height: 10), // Khoảng cách giữa các nút
-                  CustomButton(
-                    onPressed: () {
-                      Navigator.push(
-                        context,
-                        MaterialPageRoute(
-                            builder: (context) => const PaymentHistoryList()),
-                      );
-                    },
-                    backgroundColor: AppColors.primaryColor,
-                    textColor: AppColors.textColor,
-                    text: 'View Purchase History',
-                  ),
+                  isWideScreen
+                      ? LayoutBuilder(
+                          builder: (context, constraints) {
+                            final buttonPadding = constraints.maxWidth > 600
+                                ? const EdgeInsets.symmetric(horizontal: 100.0)
+                                : const EdgeInsets.all(16.0);
+
+                            return Padding(
+                              padding: buttonPadding,
+                              child: Row(
+                                mainAxisAlignment: MainAxisAlignment.center,
+                                children: [
+                                  Expanded(
+                                    child: CustomButton(
+                                      onPressed: () {
+                                        Navigator.push(
+                                          context,
+                                          MaterialPageRoute(
+                                              builder: (context) =>
+                                                  CheckoutScreen()),
+                                        );
+                                      },
+                                      backgroundColor: AppColors.primaryColor,
+                                      textColor: AppColors.textColor,
+                                      text: 'Add Order',
+                                    ),
+                                  ),
+                                  const SizedBox(
+                                      width: 10), // Khoảng cách giữa các nút
+                                  Expanded(
+                                    child: CustomButton(
+                                      onPressed: () {
+                                        Navigator.push(
+                                          context,
+                                          MaterialPageRoute(
+                                              builder: (context) =>
+                                                  const PaymentHistoryList()),
+                                        );
+                                      },
+                                      backgroundColor: AppColors.primaryColor,
+                                      textColor: AppColors.textColor,
+                                      text: 'View Purchase History',
+                                    ),
+                                  ),
+                                ],
+                              ),
+                            );
+                          },
+                        )
+                      : Column(
+                          children: [
+                            CustomButton(
+                              onPressed: () {
+                                Navigator.push(
+                                  context,
+                                  MaterialPageRoute(
+                                      builder: (context) => CheckoutScreen()),
+                                );
+                              },
+                              backgroundColor: AppColors.primaryColor,
+                              textColor: AppColors.textColor,
+                              text: 'Add Order',
+                            ),
+                            const SizedBox(
+                                height: 10), // Khoảng cách giữa các nút
+                            CustomButton(
+                              onPressed: () {
+                                Navigator.push(
+                                  context,
+                                  MaterialPageRoute(
+                                      builder: (context) =>
+                                          const PaymentHistoryList()),
+                                );
+                              },
+                              backgroundColor: AppColors.primaryColor,
+                              textColor: AppColors.textColor,
+                              text: 'View Purchase History',
+                            ),
+                          ],
+                        ),
                 ],
               ),
             ),

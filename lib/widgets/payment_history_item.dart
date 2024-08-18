@@ -61,7 +61,7 @@ class PaymentHistoryItem extends StatelessWidget {
             const SizedBox(height: 10),
             Row(
               children: [
-                const Icon(Icons.alarm),
+                const Icon(Icons.alarm, color: AppColors.textColor),
                 const SizedBox(width: 8),
                 Text(
                   paymentHistory.dateTime.toString(),

@@ -1,3 +1,5 @@
+import 'dart:math';
+
 import 'package:flutter/material.dart';
 import 'package:promo_track/utils/colors.dart';
 import 'package:promo_track/utils/random_utils.dart';
@@ -50,14 +52,35 @@ class _CheckoutScreenState extends State<CheckoutScreen> {
   }
 
   void _generateRandomValues() {
-    // Random instance
+    // List of possible product names
+    final List<String> productNames = [
+      'Product A',
+      'Product B',
+      'Product C',
+      'Product D',
+      'Product E'
+    ];
+
+    // Create an instance of Random
+    final random = Random();
+
+    // Generate random product name
+    final randomProductName = productNames[random.nextInt(productNames.length)];
+
+    // Generate random quantity from 1 to 10
+    final randomQuantity =
+        random.nextInt(10) + 1; // nextInt(10) gives 0-9, so add 1 to get 1-10
+
+    // Generate random values for phone, price, and discount
     final randomValues = RandomUtils.generateRandomValues();
 
-    // Cập nhật TextField với giá trị ngẫu nhiên
+    // Update TextFields with generated values
     setState(() {
       _phoneController.text = randomValues['phone'] ?? '';
       _priceController.text = randomValues['price'] ?? '';
       _discountController.text = randomValues['discount'] ?? '';
+      _productNameController.text = randomProductName;
+      _quantityController.text = randomQuantity.toString();
     });
   }
 
