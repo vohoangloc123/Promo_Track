@@ -3,19 +3,20 @@ import 'package:promo_track/utils/colors.dart';
 import 'custom_button_group.dart'; // Import nếu CustomButtonGroup ở file khác
 import 'custom_textfield.dart'; // Import nếu CustomTextfield ở file khác
 
-class CustomForm extends StatelessWidget {
+class CustomForm extends StatefulWidget {
   final TextEditingController productNameController;
   final TextEditingController quantityController;
   final TextEditingController phoneController;
   final TextEditingController priceController;
   final TextEditingController discountController;
   final String? selectedPaymentMethod;
-  final bool isDiscountAppliedDirectly;
   final double calculatedPrice;
   final VoidCallback calculateDiscount;
   final VoidCallback generateRandomValues;
   final VoidCallback showPurchaseHistory;
-
+  final VoidCallback checkPhoneNumber;
+  final bool isDiscountAppliedDirectly; // Thêm thuộc tính này
+  final ValueChanged<bool> onDiscountAppliedDirectlyChanged;
   const CustomForm({
     Key? key,
     required this.productNameController,
@@ -24,12 +25,28 @@ class CustomForm extends StatelessWidget {
     required this.priceController,
     required this.discountController,
     required this.selectedPaymentMethod,
-    required this.isDiscountAppliedDirectly,
     required this.calculatedPrice,
     required this.calculateDiscount,
     required this.generateRandomValues,
     required this.showPurchaseHistory,
+    required this.checkPhoneNumber,
+    required this.isDiscountAppliedDirectly, // Thêm thuộc tính này
+    required this.onDiscountAppliedDirectlyChanged,
   }) : super(key: key);
+
+  @override
+  _CustomFormState createState() => _CustomFormState();
+}
+
+class _CustomFormState extends State<CustomForm> {
+  late bool _isDiscountAppliedDirectly; // Định nghĩa biến này
+
+  @override
+  void initState() {
+    super.initState();
+    _isDiscountAppliedDirectly = widget
+        .isDiscountAppliedDirectly; // Sử dụng widget.isDiscountAppliedDirectly
+  }
 
   @override
   Widget build(BuildContext context) {
@@ -39,7 +56,7 @@ class CustomForm extends StatelessWidget {
         children: <Widget>[
           const SizedBox(height: 10),
           CustomTextfield(
-            onPressed: productNameController,
+            onPressed: widget.productNameController,
             color: AppColors.textColor,
             textLabel: const Text('Product Name'),
           ),
@@ -48,7 +65,7 @@ class CustomForm extends StatelessWidget {
             children: [
               Expanded(
                 child: TextField(
-                  controller: quantityController,
+                  controller: widget.quantityController,
                   decoration: InputDecoration(
                     labelText: 'Quantity',
                     labelStyle: const TextStyle(color: AppColors.textColor),
@@ -68,9 +85,10 @@ class CustomForm extends StatelessWidget {
                 icon: const Icon(Icons.remove, color: Colors.white),
                 onPressed: () {
                   int currentQuantity =
-                      int.tryParse(quantityController.text) ?? 0;
+                      int.tryParse(widget.quantityController.text) ?? 0;
                   if (currentQuantity > 0) {
-                    quantityController.text = (currentQuantity - 1).toString();
+                    widget.quantityController.text =
+                        (currentQuantity - 1).toString();
                   }
                 },
               ),
@@ -78,33 +96,34 @@ class CustomForm extends StatelessWidget {
                 icon: const Icon(Icons.add, color: Colors.white),
                 onPressed: () {
                   int currentQuantity =
-                      int.tryParse(quantityController.text) ?? 0;
-                  quantityController.text = (currentQuantity + 1).toString();
+                      int.tryParse(widget.quantityController.text) ?? 0;
+                  widget.quantityController.text =
+                      (currentQuantity + 1).toString();
                 },
               ),
             ],
           ),
           const SizedBox(height: 10),
           CustomTextfield(
-            onPressed: phoneController,
+            onPressed: widget.phoneController,
             color: AppColors.textColor,
             textLabel: const Text('Phone Number'),
           ),
           const SizedBox(height: 10),
           CustomTextfield(
-            onPressed: priceController,
+            onPressed: widget.priceController,
             color: AppColors.textColor,
             textLabel: const Text('Price'),
           ),
           const SizedBox(height: 10),
           CustomTextfield(
-            onPressed: discountController,
+            onPressed: widget.discountController,
             color: AppColors.textColor,
             textLabel: const Text('Discount (%)'),
           ),
           const SizedBox(height: 10),
           DropdownButtonFormField<String>(
-            value: selectedPaymentMethod,
+            value: widget.selectedPaymentMethod,
             onChanged: (String? newValue) {
               // Handle payment method change
             },
@@ -141,11 +160,25 @@ class CustomForm extends StatelessWidget {
           ),
           Row(
             children: <Widget>[
-              Checkbox(
-                value: isDiscountAppliedDirectly,
-                onChanged: (value) {
-                  // Handle checkbox change
-                },
+              Row(
+                children: <Widget>[
+                  Checkbox(
+                    value: _isDiscountAppliedDirectly,
+                    onChanged: (value) {
+                      setState(() {
+                        _isDiscountAppliedDirectly = value ?? false;
+                        widget.onDiscountAppliedDirectlyChanged(
+                            _isDiscountAppliedDirectly);
+                        print(
+                            'Discount Applied Directly: $_isDiscountAppliedDirectly');
+                      });
+                    },
+                  ),
+                  const Text(
+                    'Direct deduction from price',
+                    style: TextStyle(color: AppColors.textColor),
+                  ),
+                ],
               ),
               const Text(
                 'Direct deduction from price',
@@ -154,7 +187,7 @@ class CustomForm extends StatelessWidget {
             ],
           ),
           Text(
-            'The amount after calculation: \$${calculatedPrice.toStringAsFixed(2)}',
+            'The amount after calculation: \$${widget.calculatedPrice.toStringAsFixed(2)}',
             style: const TextStyle(
                 fontSize: 16,
                 fontWeight: FontWeight.bold,
@@ -162,9 +195,10 @@ class CustomForm extends StatelessWidget {
           ),
           const SizedBox(height: 10),
           CustomButtonGroup(
-            onCalculateDiscount: calculateDiscount,
-            onGenerateRandomValues: generateRandomValues,
-            onShowPurchaseHistory: showPurchaseHistory,
+            onCheckPhoneNumber: widget.checkPhoneNumber,
+            onCalculateDiscount: widget.calculateDiscount,
+            onGenerateRandomValues: widget.generateRandomValues,
+            onShowPurchaseHistory: widget.showPurchaseHistory,
           ),
         ],
       ),

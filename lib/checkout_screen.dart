@@ -20,6 +20,13 @@ class _CheckoutScreenState extends State<CheckoutScreen> {
   bool _isDiscountAppliedDirectly = true;
   String _selectedPaymentMethod = 'Cash';
   double _calculatedPrice = 0; // Biến lưu trữ số tiền đã tính toán
+
+  @override
+  void initState() {
+    super.initState();
+    _setCurrentDateTime();
+  }
+
   void _showPurchaseHistory() async {
     final prefs = await SharedPreferences.getInstance();
     List<String> history = prefs.getStringList('purchase_history') ?? [];
@@ -92,55 +99,18 @@ class _CheckoutScreenState extends State<CheckoutScreen> {
     print("Saved History: $historyEntry");
     print("Saved Detail History: $detailHistoryEntry");
     // Lưu thông tin chiết khấu
-    await prefs.setString('last_discount', _discountController.text);
-    await prefs.setBool(
-        'last_discount_applied_directly', _isDiscountAppliedDirectly);
+    // await prefs.setString('last_discount', _discountController.text);
+    // await prefs.setBool(
+    //     'last_discount_applied_directly', _isDiscountAppliedDirectly);
   }
 
-  @override
-  Widget build(BuildContext context) {
-    return Scaffold(
-      appBar: AppBar(
-        title: const Text(
-          'Checkout Screen',
-          style: TextStyle(
-            fontSize: 24,
-            color: AppColors.textColor, // Màu chữ tiêu đề
-          ),
-        ),
-        backgroundColor: AppColors.primaryColor, // Màu nền của AppBar
-        iconTheme: const IconThemeData(
-          color: AppColors.textColor, // Màu của các icon trong AppBar
-        ),
-      ),
-      body: Container(
-        decoration: const BoxDecoration(
-          gradient: LinearGradient(
-            begin: Alignment.topLeft,
-            end: Alignment.bottomRight,
-            colors: [AppColors.primaryColor, AppColors.secondaryColor],
-          ),
-        ),
-        child: CustomForm(
-          productNameController: _productNameController,
-          quantityController: _quantityController,
-          phoneController: _phoneController,
-          priceController: _priceController,
-          discountController: _discountController,
-          selectedPaymentMethod: _selectedPaymentMethod,
-          isDiscountAppliedDirectly: _isDiscountAppliedDirectly,
-          calculatedPrice: _calculatedPrice,
-          calculateDiscount: _calculateDiscount,
-          generateRandomValues: _generateRandomValues,
-          showPurchaseHistory: _showPurchaseHistory,
-        ),
-      ),
-    );
-  }
+  void _checkPhoneNumber() async {}
 
   void _calculateDiscount() {
     final price = double.tryParse(_priceController.text) ?? 0;
     final discountPercentage = double.tryParse(_discountController.text) ?? 0;
+    print('Check discount: $_isDiscountAppliedDirectly');
+    print('Price: $price');
 
     if (price <= 0 || discountPercentage < 0) {
       _showErrorDialog('Vui lòng nhập giá tiền và chiết khấu hợp lệ.');
@@ -168,12 +138,16 @@ class _CheckoutScreenState extends State<CheckoutScreen> {
       _showErrorDialog('Vui lòng nhập số điện thoại.');
       return;
     }
+    double quantity = _quantityController.text.isEmpty
+        ? 0
+        : double.parse(_quantityController.text);
     double discountedPrice;
+    print('Discount Percentage: $discountPercentage');
     if (_isDiscountAppliedDirectly) {
-      discountedPrice = price * (1 - discountPercentage / 100);
+      discountedPrice = price * (1 - (discountPercentage / 100));
     } else {
-      // Quy đổi thành giảm giá cho lần sau (thực tế không áp dụng ngay, chỉ ghi nhận)
-      discountedPrice = price;
+      discountedPrice =
+          price; // Quy đổi thành giảm giá cho lần sau (chỉ ghi nhận)
     }
     _saveHistory();
     setState(() {
@@ -193,6 +167,62 @@ class _CheckoutScreenState extends State<CheckoutScreen> {
             onPressed: () => Navigator.of(context).pop(),
           ),
         ],
+      ),
+    );
+  }
+
+  @override
+  Widget build(BuildContext context) {
+    return Scaffold(
+      appBar: AppBar(
+        title: const Text(
+          'Checkout Screen',
+          style: TextStyle(
+            fontSize: 24,
+            color: AppColors.textColor, // Màu chữ tiêu đề
+          ),
+        ),
+        backgroundColor: AppColors.primaryColor, // Màu nền của AppBar
+        iconTheme: const IconThemeData(
+          color: AppColors.textColor, // Màu của các icon trong AppBar
+        ),
+      ),
+      body: Container(
+        decoration: const BoxDecoration(
+          gradient: LinearGradient(
+            begin: Alignment.topLeft,
+            end: Alignment.bottomRight,
+            colors: [AppColors.primaryColor, AppColors.secondaryColor],
+          ),
+        ),
+        child: Column(
+          children: <Widget>[
+            Expanded(
+              child: CustomForm(
+                productNameController: _productNameController,
+                quantityController: _quantityController,
+                phoneController: _phoneController,
+                priceController: _priceController,
+                discountController: _discountController,
+                selectedPaymentMethod: _selectedPaymentMethod,
+                calculatedPrice: _calculatedPrice,
+                isDiscountAppliedDirectly: _isDiscountAppliedDirectly,
+                onDiscountAppliedDirectlyChanged: (value) {
+                  setState(() {
+                    _isDiscountAppliedDirectly = value;
+                    print(
+                        'Discount Applied Directly là: $_isDiscountAppliedDirectly');
+                  });
+                }, //
+                calculateDiscount: _calculateDiscount,
+                generateRandomValues: _generateRandomValues,
+                showPurchaseHistory: _showPurchaseHistory,
+                checkPhoneNumber:
+                    _checkPhoneNumber, // Thêm nút kiểm tra số điện thoại
+              ),
+            ),
+          ],
+        ),
       ),
     );
   }

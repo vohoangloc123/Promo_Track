@@ -6,9 +6,10 @@ class CustomButtonGroup extends StatelessWidget {
   final VoidCallback onCalculateDiscount;
   final VoidCallback onGenerateRandomValues;
   final VoidCallback onShowPurchaseHistory;
-
+  final VoidCallback onCheckPhoneNumber;
   const CustomButtonGroup({
     Key? key,
+    required this.onCheckPhoneNumber,
     required this.onCalculateDiscount,
     required this.onGenerateRandomValues,
     required this.onShowPurchaseHistory,
@@ -20,6 +21,13 @@ class CustomButtonGroup extends StatelessWidget {
       padding: const EdgeInsets.symmetric(horizontal: 16.0),
       child: Column(
         children: [
+          CustomButton(
+            onPressed: onCheckPhoneNumber,
+            backgroundColor: AppColors.primaryColor,
+            textColor: AppColors.textColor,
+            text: 'Check discount',
+          ),
+          const SizedBox(height: 10),
           CustomButton(
             onPressed: onCalculateDiscount,
             backgroundColor: AppColors.primaryColor,

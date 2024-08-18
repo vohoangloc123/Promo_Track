@@ -7,7 +7,7 @@ class RandomUtils {
 
     final randomPhone = '0${random.nextInt(900000000) + 100000000}';
     final randomPrice = (random.nextInt(100000) + 1000).toString();
-    final randomDiscount = '${random.nextInt(50) + 1}%';
+    final randomDiscount = '${random.nextInt(50) + 1}';
 
     return {
       'phone': randomPhone,
